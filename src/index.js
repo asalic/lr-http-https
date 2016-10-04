@@ -5,14 +5,47 @@ var connect = require('connect'),
     gaze = require('gaze'),
     open = require('open'),
     tinylr = require('tiny-lr'),
-    debounce = require('lodash.debounce');
+    debounce = require('lodash.debounce'),
+    https = require('https'),
+    http = require('http'),
+    fs = require('fs');
 
+function lrListen(err, livereloadPort, absoluteWatchFiles) {
+  if(err) {
+    console.error("Livereload not started", err);
+    return;
+  }
 
-module.exports = function(port, dir, url, livereloadPort, watchFiles, openBrowser, extensions, debounceDelay) {
+  console.log('Livereload listening on port %s', livereloadPort);
+
+  console.log("Watching files:");
+  for(var f in absoluteWatchFiles) {
+    console.log('  ' + absoluteWatchFiles[f]);
+  }
+}
+
+module.exports = function(port, dir, url, livereloadPort, watchFiles, openBrowser,
+  extensions, debounceDelay, key, cert) {
 
   port = port || 8080;
   dir = dir || '.';
   url = url || '';
+  key = key || '';
+  cert = cert || '';
+  var options = {};
+  if ((key === '' && cert !== '') ||
+      (key !== '' && cert === ''))
+      {
+
+        console.log("You have to specify both a certificate and a key");
+        return;
+      }
+      else {
+        options = {
+            key:    fs.readFileSync(key),
+            cert:   fs.readFileSync(cert),
+        };
+      }
 
   if(livereloadPort === 'false' || livereloadPort === false)
     livereloadPort = false;
@@ -35,22 +68,34 @@ module.exports = function(port, dir, url, livereloadPort, watchFiles, openBrowse
 
   if(livereloadPort) {
     server.use(require('connect-livereload')({ port: livereloadPort }));
-
-    var livereloadServer = tinylr();
-
-    livereloadServer.listen(livereloadPort, function(err) {
-      if(err) {
-        console.error("Livereload not started", err);
-        return;
-      }
-
-      console.log('Livereload listening on port %s', livereloadPort);
-
-      console.log("Watching files:");
-      for(var f in absoluteWatchFiles) {
-        console.log('  ' + absoluteWatchFiles[f]);
-      }
-    });
+    var livereloadServer = null;
+    if (key !== '' && cert !== '')
+    {
+      var o = {
+          key:    key,
+          cert:   cert
+      };
+      livereloadServer = tinylr(options);
+      livereloadServer.listen(livereloadPort,
+        function(err) {lrListen(err, livereloadPort, absoluteWatchFiles);});
+    } else {
+      livereloadServer = tinylr();
+      livereloadServer.listen(livereloadPort,
+        function(err) {lrListen(err, livereloadPort, absoluteWatchFiles);});
+    }
+    // livereloadServer.listen(livereloadPort, function(err) {
+    //   if(err) {
+    //     console.error("Livereload not started", err);
+    //     return;
+    //   }
+    //
+    //   console.log('Livereload listening on port %s', livereloadPort);
+    //
+    //   console.log("Watching files:");
+    //   for(var f in absoluteWatchFiles) {
+    //     console.log('  ' + absoluteWatchFiles[f]);
+    //   }
+    // });
 
     gaze(watchFiles, {cwd: absoluteDir}, function(err, watcher) {
       if(err) {
@@ -71,11 +116,21 @@ module.exports = function(port, dir, url, livereloadPort, watchFiles, openBrowse
   }
 
   server.use(serveStatic(absoluteDir, { extensions: extensions }))
-        .use(serveIndex(absoluteDir))
-        .listen(port);
+        .use(serveIndex(absoluteDir));
+        //.listen(port);
 
-  console.log("HTTP server listening on port " + port + "\nServing " + absoluteDir);
+  if (key !== '' && cert !== '')
+  {
+    console.log("HTTPS server listening on port " + port + "\nServing " + absoluteDir);
+    https.createServer(options, server).listen(port);
+  } else {
+    console.log("HTTP server listening on port " + port + "\nServing " + absoluteDir);
+    http.createServer(server).listen(port);
+  }
 
-  if(openBrowser) { open("http://127.0.0.1:" + port + url); }
+
+
+
+  if(openBrowser) { open("https://127.0.0.1:" + port + url); }
 
 };

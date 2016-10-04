@@ -1,7 +1,7 @@
 {
-  "name": "lr-http-server",
+  "name": "lr-http-https-server",
   "version": "0.1.5",
-  "description": "An HTTP server with livereload included",
+  "description": "An HTTP(S) server with livereload included",
   "main": "src/index.js",
   "bin": {
     "lr-http-server": "bin/lr-http-server",
@@ -12,7 +12,8 @@
     "type": "git",
     "url": "git@github.com:manuelcabral/lr-http-server.git"
   },
-  "author": "Manuel Cabral (m.cabral@digisfera.pt)",
+  "original author": "Manuel Cabral (m.cabral@digisfera.pt)",
+  "author": "Andy S Alic",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/manuelcabral/lr-http-server/issues"
