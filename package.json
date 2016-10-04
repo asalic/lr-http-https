@@ -1,11 +1,10 @@
 {
   "name": "lr-http-https",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "An HTTP(S) server with livereload included",
   "main": "src/index.js",
   "bin": {
-    "lr-http-server": "bin/lr-http-https",
-    "lrhs": "bin/lr-http-https"
+    "lr-http-https": "bin/lr-http-https"
   },
   "scripts": {},
   "repository": {
