@@ -1,6 +1,6 @@
 # lr-http-server
 
-An HTTP server with livereload included. If a file inside the folder being served is changed, added or deleted, the browser will automatically reload.
+An HTTP(S) server with livereload included. If a file inside the folder being served is changed, added or deleted, the browser will automatically reload. To create a HTTPS server, you have to provide the path to both a *.key and a *.cert file.
 
 
 ## Installing
@@ -9,7 +9,7 @@ An HTTP server with livereload included. If a file inside the folder being serve
 
 ## Usage
 
-    lr-http-server [-p <port>] [-d <dir>] [-l livereloadport] [-w < watchPaths || false >] [-b]
+    lr-http-server [-p <port>] [-d <dir>] [-l livereloadport] [-w < watchPaths || false >] [-b] [-k <path>] [-c <path>]
 
 **port** (default *8080*): Port to listen on
 
@@ -22,6 +22,10 @@ An HTTP server with livereload included. If a file inside the folder being serve
 **watchPaths**: Comma-separated list of glob patterns for the files to watch. *e.g.* `**/*.js,**/*.css,**/*.html,**/*.xml`
 
 **b**: disable browser open
+
+**k**: path to a key file; required for the https server
+
+**c**: path to a certificate file; required for the https server
 
 ## Examples
 
