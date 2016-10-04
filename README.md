@@ -1,15 +1,18 @@
-# lr-http-server
+# lr-http-https
 
 An HTTP(S) server with livereload included. If a file inside the folder being served is changed, added or deleted, the browser will automatically reload. To create a HTTPS server, you have to provide the path to both a *.key and a *.cert file.
+
+This program is based on lr-http-server available at:
+https://github.com/digisfera/lr-http-server
 
 
 ## Installing
 
-    npm install -g lr-http-server
+    npm install -g lr-http-https
 
 ## Usage
 
-    lr-http-server [-p <port>] [-d <dir>] [-l livereloadport] [-w < watchPaths || false >] [-b] [-k <path>] [-c <path>]
+    lr-http-https [-p <port>] [-d <dir>] [-l livereloadport] [-w < watchPaths || false >] [-b] [-k <path>] [-c <path>]
 
 **port** (default *8080*): Port to listen on
 
@@ -31,7 +34,7 @@ An HTTP(S) server with livereload included. If a file inside the folder being se
 
 Default usage
 
-    > lr-http-server
+    > lr-http-https
 
     HTTP server listening on port 8080
     Serving <path>
@@ -44,7 +47,7 @@ Default usage
 
 All options
 
-    > lr-http-server -p 80 -d src/ -u /#/main -l 30000 -w **/*.css,*.html 
+    > lr-http-https -p 80 -d src/ -u /#/main -l 30000 -w **/*.css,*.html 
 
     HTTP server listening on port 80
     Serving <path>/src
